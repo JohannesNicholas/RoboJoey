@@ -1,4 +1,5 @@
 import discord
+import secrets
 
 bot = discord.Bot()
 
@@ -6,8 +7,8 @@ bot = discord.Bot()
 async def on_ready():
     print(f"We have logged in as {bot.user}")
 
-@bot.slash_command(guild_ids=[your, guild_ids, here])
+@bot.slash_command(guild_ids=[994167372090966016])
 async def hello(ctx):
     await ctx.respond("Hello!")
 
-bot.run("your token here")
+bot.run(secrets.botToken)
