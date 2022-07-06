@@ -11,4 +11,12 @@ async def on_ready():
 async def hello(ctx):
     await ctx.respond("Hello!")
 
+@bot.slash_command(guild_ids=[994167372090966016])
+async def poll(ctx):
+    await ctx.respond("Hello!")
+
+@bot.slash_command(guild_ids=[994167372090966016])
+async def about(ctx):
+    await ctx.respond("Hello!")
+
 bot.run(secrets.botToken)
