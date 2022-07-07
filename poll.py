@@ -1,3 +1,4 @@
+import datetime
 import discord
 
 #the view for a poll message
@@ -6,6 +7,8 @@ class View(discord.ui.View):
 
     #initialization
     def __init__(self, options=["yes", "no"], emojis=[], descriptions=[]):
+        self.selectOptions.clear()
+
         for i in range(len(options)):
             option = options[i]
 
@@ -19,8 +22,6 @@ class View(discord.ui.View):
             if i < len(descriptions):
                 description = descriptions[i]
             
-            print("emoji",emoji)
-                
             self.selectOptions.append(
                 discord.SelectOption(
                     label=option, 

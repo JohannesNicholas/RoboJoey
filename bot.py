@@ -8,7 +8,7 @@ bot = discord.Bot()
 @bot.event
 async def on_ready():
     await log(f"We have logged in as {bot.user}")
-    # bot.add_view(pollModule.View()) #remember that poll views are persistent
+    bot.add_view(pollModule.View()) #remember that poll views are persistent
 
 
 #slash commands
