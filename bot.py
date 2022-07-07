@@ -1,5 +1,6 @@
 import discord # pycord
 import secrets
+import poll as pollModule
 
 bot = discord.Bot()
 
@@ -7,6 +8,7 @@ bot = discord.Bot()
 @bot.event
 async def on_ready():
     await log(f"We have logged in as {bot.user}")
+    bot.add_view(pollModule.View()) #remember that poll views are persistent
 
 
 #slash commands
@@ -16,7 +18,7 @@ async def hello(ctx):
 
 @bot.slash_command()
 async def poll(ctx):
-    await ctx.respond("Hello!")
+    await ctx.respond("Poll: ", view=pollModule.View(options=["1", "2", "3"]))
 
 @bot.slash_command()
 async def about(ctx):
@@ -24,6 +26,7 @@ async def about(ctx):
 Joey takes all responsibility for my actions. 
 Contact: johannes.nicholas@utas.edu.au. 
 View my source code: https://github.com/JohannesNicholas/RoboJoey""")
+
 
 
 #used to log everything
