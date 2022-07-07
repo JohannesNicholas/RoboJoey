@@ -17,16 +17,14 @@ async def hello(ctx):
     await ctx.respond("Hello!")
 
 #poll command
-@bot.slash_command()
-async def poll(ctx, 
+@bot.slash_command(description = "Creates a poll")
+async def poll3(ctx, 
         question: discord.Option(str, "The question being asked", required = True, default = ''),
-        option_a: discord.Option(str, "An answer to the question", required = False, default = ''),
-        option_b: discord.Option(str, "An answer to the question", required = False, default = ''),
-        option_c: discord.Option(str, "An answer to the question", required = False, default = ''),
-        option_d: discord.Option(str, "An answer to the question", required = False, default = ''),
-        option_e: discord.Option(str, "An answer to the question", required = False, default = ''),
+        options: discord.Option(str, "Selectable options to the question. Separated by a comma (,)", required = False, default = ''),
+        emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
+        descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
     ):
-    await ctx.respond("Poll: ", view=pollModule.View())
+    await ctx.respond("Poll: ", view=pollModule.View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(",")))
 
 @bot.slash_command()
 async def about(ctx):
