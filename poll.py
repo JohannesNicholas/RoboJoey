@@ -1,16 +1,18 @@
 import discord
+import itertools
 
 #the view for a poll message
 class View(discord.ui.View):
     selectOptions = []# the list of options from which users can choose, a required field
 
     #initialization
-    def __init__(self, options=["yes", "no"], descriptions=[]):
-        for option in options:
+    def __init__(self, options=["yes", "no"], question="do you agree?", emojis=["✅", "❌"], descriptions=["yes", "no"]):
+        for (option, emoji, description) in zip(options, emojis, descriptions):
             self.selectOptions.append(
                 discord.SelectOption(
                     label=option, 
-                    description=descriptions[options.index(option)] if len(descriptions) > 0 else ""
+                    description=description,
+                    emoji=emoji
                 )
             )
         super().__init__(timeout=None) #persistent view
