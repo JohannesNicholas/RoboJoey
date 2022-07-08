@@ -39,7 +39,13 @@ def save_poll(poll_id:int, results_id:int):
 
 #saves a poll result into the database
 def save_poll_result(poll_id:int, user_id:int, selection:int):
-    execute("INSERT INTO poll_results VALUES (?, ?, ?)", (poll_id, user_id, selection))
+    #if the user has not already voted, insert their selection
+    if execute("SELECT * FROM poll_results WHERE poll_id = ? AND user_id = ?", (poll_id, user_id)) == []:
+        execute("INSERT INTO poll_results VALUES (?, ?, ?)", (poll_id, user_id, selection))
+    else:
+        #if the user has already voted, update their selection
+        execute("UPDATE poll_results SET selection = ? WHERE poll_id = ? AND user_id = ?", (selection, poll_id, user_id))
+
 
 #gets the poll results for a poll
 #returns result_id, counts. Where result_id is the id of the message that contains the results, and counts is a list of the number of votes for each option

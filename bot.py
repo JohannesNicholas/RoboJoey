@@ -44,10 +44,14 @@ async def poll(ctx,
             emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
             descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
         ):
-    poll_response = await ctx.respond(question, view=pollModule.View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(",")))
+    await ctx.respond(question, view=pollModule.View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(",")))
     await bot.get_channel(ctx.channel_id).send("Results:")
-    results_id = discord.utils.get(await ctx.channel.history(limit=1).flatten()).id #get the message that was just sent
-    poll_id = poll_response.id #get the id of the poll
+
+    messages = await ctx.channel.history(limit=2).flatten() #get those two sent messages
+
+    poll_id = messages[1].id
+    results_id = messages[0].id
+
     db.save_poll(poll_id, results_id)
     await log(f"Created poll {poll_id}, results {results_id}")
     
