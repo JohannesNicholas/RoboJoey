@@ -7,7 +7,7 @@ import sqlite3
 
 #executes an sql query on the database and returns the result
 def execute(query, args=()):
-    conn = sqlite3.connect("db.sqlite3")
+    conn = sqlite3.connect("database.db")
     c = conn.cursor()
     c.execute(query, args)
     result = c.fetchall()
@@ -19,20 +19,27 @@ def execute(query, args=()):
 
 #ensures the database is setup
 def setup():
-    execute("""CREATE TABLE IF NOT EXISTS polls (
-        id INTEGER,
-        results_id INTEGER
-        PRIMARY KEY id
-    )""")
+    execute("""CREATE TABLE IF NOT EXISTS polls ( 
+        id INTEGER NOT NULL,
+        results_id INTEGER NOT NULL,
+        PRIMARY KEY (id)
+    );""")
     execute("""CREATE TABLE IF NOT EXISTS poll_results (
-        poll_id INTEGER,
-        user_id INTEGER,
+        poll_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
         selection INTEGER,
-        FOREIGN KEY poll_id REFERENCES polls(id)
+        FOREIGN KEY (poll_id) REFERENCES polls(id),
         PRIMARY KEY (poll_id, user_id)
-    )""")
+    );""")
 
 
+#saves a poll into the database
+def save_poll(poll_id:int, results_id:int):
+    execute("INSERT INTO polls VALUES (?, ?)", (poll_id, results_id))
+
+#saves a poll result into the database
+def save_poll_result(poll_id:int, user_id:int, selection:int):
+    execute("INSERT INTO poll_results VALUES (?, ?, ?)", (poll_id, user_id, selection))
 
 #gets the poll results for a poll
 #returns result_id, counts. Where result_id is the id of the message that contains the results, and counts is a list of the number of votes for each option

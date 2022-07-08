@@ -8,8 +8,10 @@ from socket import timeout
 import discord # pycord
 import secrets
 import poll as pollModule
+import db_handler as db
 
 bot = discord.Bot()
+db.setup()
 
 #when the bot is connected
 @bot.event
@@ -37,16 +39,20 @@ async def say(ctx, message: discord.Option(str, "What the bot will say", require
 #poll command
 @bot.slash_command(description = "Creates a poll")
 async def poll(ctx, 
-        question: discord.Option(str, "The question being asked", required = True, default = 'Do you agree?'),
-        options: discord.Option(str, "Selectable options to the question. Separated by a comma (,)", required = False, default = 'Yes,No'),
-        emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
-        descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
-    ):
+            question: discord.Option(str, "The question being asked", required = True, default = 'Do you agree?'),
+            options: discord.Option(str, "Selectable options to the question. Separated by a comma (,)", required = False, default = 'Yes,No'),
+            emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
+            descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
+        ):
     poll_response = await ctx.respond(question, view=pollModule.View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(",")))
     await bot.get_channel(ctx.channel_id).send("Results:")
     results_id = discord.utils.get(await ctx.channel.history(limit=1).flatten()).id #get the message that was just sent
-    poll_id = poll_response #get the id of the poll
-    print(poll_id.id, results_id)
+    poll_id = poll_response.id #get the id of the poll
+    db.save_poll(poll_id, results_id)
+    await log(f"Created poll {poll_id}, results {results_id}")
+    
+
+
 
 @bot.slash_command()
 async def about(ctx):
