@@ -34,7 +34,7 @@ class View(discord.ui.View):
 
 
     @discord.ui.select(# the decorator that lets you specify the properties of the select menu
-        placeholder = "Choose a Flavor!", # the placeholder text that will be displayed if nothing is selected
+        placeholder = "Select", # the placeholder text that will be displayed if nothing is selected
         min_values = 1, # the minimum number of values that must be selected by the users
         max_values = 1, # the maxmimum number of values that can be selected by the users
         options = selectOptions,
@@ -42,4 +42,7 @@ class View(discord.ui.View):
     )
     
     async def select_callback(self, select, interaction): # the function called when the user is done selecting options
-        await interaction.response.send_message(f"Awesome! I like {select.values[0]} too!")
+        # await interaction.edit(content="You selected: " + str(select.selected_values))
+        # await interaction.response.edit_message(content=f"Awesome! I like {select.values[0]} too!")
+        # await interaction.response.send_message(f"Awesome! I like {select.values[0]} too!")
+        pass
