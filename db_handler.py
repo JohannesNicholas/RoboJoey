@@ -49,8 +49,8 @@ def save_poll_result(poll_id:int, user_id:int, selection:int):
 
 #gets the poll results for a poll
 #returns result_id, counts. Where result_id is the id of the message that contains the results, and counts is a list of the number of votes for each option
-def get_poll_results(poll_id):
-    query_result = execute("SELECT selection FROM poll_results WHERE poll_id = ?", (poll_id))
+def get_poll_results(poll_id:int):
+    query_result = execute("SELECT selection FROM poll_results WHERE poll_id = ?", (poll_id,))
     counts = []
     for row in query_result:
         s = row[0] #the selection
@@ -62,7 +62,7 @@ def get_poll_results(poll_id):
         counts[s] += 1
 
     #get the message id of the results message
-    results_id = execute("SELECT results_id FROM polls WHERE id = ?", (poll_id))[0][0]
+    results_id = execute("SELECT results_id FROM polls WHERE id = ?", (poll_id,))[0][0]
 
     return results_id, counts
         

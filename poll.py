@@ -9,9 +9,10 @@ import db_handler as db
 #the view for a poll message
 class View(discord.ui.View):
     selectOptions = []# the list of options from which users can choose, a required field
+    bot=None#the bot
 
     #initialization
-    def __init__(self, options=["yes", "no"], emojis=[], descriptions=[]):
+    def __init__(self, options=["yes", "no"], emojis=[], descriptions=[], bot=None):
         self.selectOptions.clear()
 
         for i in range(len(options)):
@@ -47,9 +48,30 @@ class View(discord.ui.View):
     )
     
     async def select_callback(self, select, interaction): # the function called when the user is done selecting options
-        # await interaction.edit(content="You selected: " + str(select.selected_values))
-        # await interaction.response.edit_message(content=f"Awesome! I like {select.values[0]} too!")
-        # await interaction.response.send_message(f"Awesome! I like {select.values[0]} too!")
-        #print ("self: ", interaction.user.id)
         db.save_poll_result(interaction.message.id, interaction.user.id, select.values[0])
-        pass
+
+        results_id, results = db.get_poll_results(int(interaction.message.id))
+        results_msg = await interaction.channel.fetch_message(results_id)
+
+        lines = results_msg.content.split("\n")
+        for i in range(len(lines)): #for each line in the message
+            line_end = lines[i].split(" - ")[1] if " - " in lines[i] else lines[i] #get the end of the line
+            bar = "" #the bar to be added to the line
+            if i < len(results):
+                for j in range(results[i]): #for each vote
+                    bar += "█"
+                bar += " " + str(results[i])
+            else:
+                bar = "0"
+
+            lines[i] = bar + " - " + line_end #update the line
+
+
+        
+
+        await results_msg.edit(content="\n".join(lines))
+
+        
+        
+
+

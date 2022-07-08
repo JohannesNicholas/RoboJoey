@@ -17,7 +17,7 @@ db.setup()
 @bot.event
 async def on_ready():
     await log(f"We have logged in as {bot.user}")
-    bot.add_view(pollModule.View()) #remember that poll views are persistent
+    bot.add_view(pollModule.View(bot=bot)) #remember that poll views are persistent
 
 
 
@@ -26,6 +26,11 @@ async def on_ready():
 @bot.slash_command()
 async def hello(ctx):
     await ctx.respond("Hello!")
+
+#ping command
+@bot.slash_command(description = "The delay from the discord server to the bot")
+async def ping(ctx):
+    await ctx.respond(str(int(bot.latency * 1000))+ "ms")
 
 
 @bot.slash_command(description = "Make the bot say something (owner only)")
@@ -36,6 +41,7 @@ async def say(ctx, message: discord.Option(str, "What the bot will say", require
     else:
         await ctx.respond("You are not the owner", ephemeral=True)
 
+
 #poll command
 @bot.slash_command(description = "Creates a poll")
 async def poll(ctx, 
@@ -44,8 +50,18 @@ async def poll(ctx,
             emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
             descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
         ):
-    await ctx.respond(question, view=pollModule.View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(",")))
-    await bot.get_channel(ctx.channel_id).send("Results:")
+    await ctx.respond(question, view=pollModule.View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(","), bot=bot))
+    
+    results_text = ""
+    for i in range(len(options.split(","))):
+        results_text += "0 - "
+        if i < len(emojis.split(",")): #emoji if there is one
+            results_text += emojis.split(",")[i] + ""
+
+        results_text += options.split(",")[i] + "\n"
+        
+
+    await bot.get_channel(ctx.channel_id).send(results_text)
 
     messages = await ctx.channel.history(limit=2).flatten() #get those two sent messages
 
