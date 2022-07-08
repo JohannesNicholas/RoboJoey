@@ -1,4 +1,8 @@
-import datetime
+#Handles most of the code for polling 
+#Check .git for creation and updates information
+#Author: Johannes Nicholas, https://github.com/JohannesNicholas
+
+
 import discord
 
 #the view for a poll message
