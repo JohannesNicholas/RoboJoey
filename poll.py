@@ -50,10 +50,6 @@ class View(discord.ui.View):
         # await interaction.edit(content="You selected: " + str(select.selected_values))
         # await interaction.response.edit_message(content=f"Awesome! I like {select.values[0]} too!")
         # await interaction.response.send_message(f"Awesome! I like {select.values[0]} too!")
-        print ("self: ", self)
-        print ("select: ", select)
-        print ("interaction: ", interaction)
-        print ("interaction.id: ", interaction.id)
-        print ("interaction.message: ", interaction.message)
-        #db.save_poll_result(interaction.response.id, select.values[0])
+        #print ("self: ", interaction.user.id)
+        db.save_poll_result(interaction.message.id, interaction.user.id, select.values[0])
         pass
