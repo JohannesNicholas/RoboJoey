@@ -84,7 +84,7 @@ View my source code: https://github.com/JohannesNicholas/RoboJoey""")
 #used to log everything
 async def log(message):
     print("Log: " + message)
-    await bot.get_channel(994423152924966932).send(message)
+    #await bot.get_channel(994423152924966932).send(message)
 
 
 #run the bot
