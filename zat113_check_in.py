@@ -4,7 +4,7 @@
 
 import discord # pycord
 import db_handler as db
-import asyncio
+import csv
 
 
 # When a message is sent anywhere
@@ -74,4 +74,28 @@ class MyModal(discord.ui.Modal):
         if interaction.user.id == self.check_in_msg.author.id:
             await self.check_in_msg.add_reaction('🎫')
             await interaction.message.delete()
+
+
+#returns a csv file of all the check ins
+async def get_check_ins(channel_id:int, bot:discord.Bot):
+    file_path = 'check_ins.csv'
+
+    with open(file_path, 'w', encoding="utf-8") as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(['Student ID', 'Message', 'Time', 'Link to message', 'student discord name', 'student discord ID'])
+
+        channel = bot.get_channel(channel_id)
+
+        async for message in channel.history(limit=None, oldest_first=True):
+            time = message.created_at.strftime("%d/%m/%Y %H:%M:%S")
+            if message.edited_at is not None:
+                time = message.edited_at.strftime("%d/%m/%Y %H:%M:%S")
+
+            
+            writer.writerow([db.get_student_id(message.author.id), message.content, time, message.jump_url, message.author.display_name, message.author.id])
+
+
+    print("compiled all messages")
+
+    return discord.File(fp=file_path)
 

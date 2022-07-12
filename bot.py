@@ -11,7 +11,10 @@ import poll as pollModule
 import db_handler as db
 import zat113_check_in as checkIn
 
-bot = discord.Bot()
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = discord.Bot(intents=intents)
 db.setup()
 
 #when the bot is connected
@@ -89,12 +92,30 @@ async def poll(ctx,
 
     messages = await ctx.channel.history(limit=2).flatten() #get those two sent messages
 
-    poll_id = messages[1].id
-    results_id = messages[0].id
+    poll_id = messages[1].id #the message id of the poll sent by the bot
+    results_id = messages[0].id #the message of the results, directly after the poll
 
     db.save_poll(poll_id, results_id)
     await log(f"Created poll {poll_id}, results {results_id}")
     
+
+
+#Check_ins command
+@bot.slash_command(description = "Get a CSV of all the check ins. (Staff only)")
+async def check_ins(ctx : discord.ApplicationContext):
+
+    await ctx.defer(ephemeral=True)
+
+    #guard if the user is not staff
+    if ctx.author.id not in secrets.zat113_staff:
+        await ctx.respond("You are not a staff member.", ephemeral=True)
+        return
+        
+    #send the file privately
+    file = await checkIn.get_check_ins(ctx.channel_id, bot=bot)
+    print(file.fp)
+    await ctx.respond("check ins:", file=file, ephemeral=True)
+        
 
 
 
