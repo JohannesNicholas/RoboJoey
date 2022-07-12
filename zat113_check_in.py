@@ -19,7 +19,7 @@ async def message(message):
         return
 
     #if we don't have the student id
-    if db.get_student_id(message.author.id) == 0:
+    if db.get_student_id(message.author.id) == -1:
         #ask the user for their student id
         await message.channel.send(f"""Thank you <@{message.author.id}> for your check in!
 I don't seem to have your student ID yet.""", 

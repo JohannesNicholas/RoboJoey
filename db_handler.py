@@ -79,11 +79,11 @@ def get_poll_results(poll_id:int):
 def set_student_id(user_id:int, student_id:int):
     execute("INSERT INTO student_ids VALUES (?, ?)", (user_id, student_id))
 
-#gets the student id for a user, returns 0 if not found
+#gets the student id for a user, returns -1 if not found
 def get_student_id(user_id:int):
     result = execute("SELECT student_id FROM student_ids WHERE user_id = ?", (user_id,))
     if result == []:
-        return 0
+        return -1
     else:
         return result[0][0]
         
