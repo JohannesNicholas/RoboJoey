@@ -31,7 +31,7 @@ class View(discord.ui.View):
             self.selectOptions.append(
                 discord.SelectOption(
                     label=option, 
-                    value=i,
+                    value=str(i),
                     description=description,
                     emoji=emoji
                 )

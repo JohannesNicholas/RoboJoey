@@ -19,17 +19,25 @@ def execute(query, args=()):
 
 #ensures the database is setup
 def setup():
+
     execute("""CREATE TABLE IF NOT EXISTS polls ( 
         id INTEGER NOT NULL,
         results_id INTEGER NOT NULL,
         PRIMARY KEY (id)
     );""")
+
     execute("""CREATE TABLE IF NOT EXISTS poll_results (
         poll_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
         selection INTEGER,
         FOREIGN KEY (poll_id) REFERENCES polls(id),
         PRIMARY KEY (poll_id, user_id)
+    );""")
+
+    execute("""CREATE TABLE IF NOT EXISTS student_ids (
+        user_id INTEGER NOT NULL,
+        student_id INTEGER NOT NULL,
+        PRIMARY KEY (user_id)
     );""")
 
 
@@ -65,4 +73,17 @@ def get_poll_results(poll_id:int):
     results_id = execute("SELECT results_id FROM polls WHERE id = ?", (poll_id,))[0][0]
 
     return results_id, counts
+
+
+#sets the student id for a user
+def set_student_id(user_id:int, student_id:int):
+    execute("INSERT INTO student_ids VALUES (?, ?)", (user_id, student_id))
+
+#gets the student id for a user, returns 0 if not found
+def get_student_id(user_id:int):
+    result = execute("SELECT student_id FROM student_ids WHERE user_id = ?", (user_id))
+    if result == []:
+        return 0
+    else:
+        return result[0][0]
         

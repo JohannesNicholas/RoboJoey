@@ -9,6 +9,7 @@ import discord # pycord
 import secrets
 import poll as pollModule
 import db_handler as db
+import zat113_check_in as checkIn
 
 bot = discord.Bot()
 db.setup()
@@ -18,6 +19,29 @@ db.setup()
 async def on_ready():
     await log(f"We have logged in as {bot.user}")
     bot.add_view(pollModule.View(bot=bot)) #remember that poll views are persistent
+
+
+
+class MyModal(discord.ui.Modal):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self.add_item(discord.ui.InputText(label="Student id", placeholder="123456"))
+
+    async def callback(self, interaction: discord.Interaction):
+        print(self.children[0].value)
+        await interaction.response.send_message("Thank you!", ephemeral=True)
+
+class View(discord.ui.View):
+    @discord.ui.button(label="Enter student ID", style=discord.ButtonStyle.primary) # Create a button
+    async def button_callback(self, button, interaction):
+        await interaction.response.send_modal(MyModal(title="Enter student ID"))
+
+
+#when someone sends a message, any message
+@bot.event
+async def on_message(message):
+    await checkIn.message(message)
 
 
 
@@ -84,7 +108,7 @@ View my source code: https://github.com/JohannesNicholas/RoboJoey""")
 #used to log everything
 async def log(message):
     print("Log: " + message)
-    #await bot.get_channel(994423152924966932).send(message)
+    await bot.get_channel(994423152924966932).send(message)
 
 
 #run the bot
