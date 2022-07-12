@@ -2,3 +2,4 @@ secrets.py
 database.db
 __pycache__/*
 __pycache__/secrets.cpython-39.pyc
+database.db

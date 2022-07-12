@@ -81,7 +81,7 @@ def set_student_id(user_id:int, student_id:int):
 
 #gets the student id for a user, returns 0 if not found
 def get_student_id(user_id:int):
-    result = execute("SELECT student_id FROM student_ids WHERE user_id = ?", (user_id))
+    result = execute("SELECT student_id FROM student_ids WHERE user_id = ?", (user_id,))
     if result == []:
         return 0
     else:
