@@ -78,7 +78,7 @@ class MyModal(discord.ui.Modal):
 
 #returns a csv file of all the check ins
 async def get_check_ins(channel_id:int, bot:discord.Bot):
-    file_path = 'check_ins.csv'
+    file_path = 'check_ins.csv' # a temporary file to store the check ins
 
     with open(file_path, 'w', encoding="utf-8") as csv_file:
         writer = csv.writer(csv_file)
