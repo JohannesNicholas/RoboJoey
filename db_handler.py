@@ -20,6 +20,7 @@ def execute(query, args=()):
 #ensures the database is setup
 def setup():
 
+    #poll tables
     execute("""CREATE TABLE IF NOT EXISTS polls ( 
         id INTEGER NOT NULL,
         results_id INTEGER NOT NULL,
@@ -34,11 +35,67 @@ def setup():
         PRIMARY KEY (poll_id, user_id)
     );""")
 
+
+    #quiz tables
+    execute("""CREATE TABLE IF NOT EXISTS quizzes ( 
+        id INTEGER NOT NULL,
+        results_id INTEGER NOT NULL,
+        correct INTEGER NOT NULL,
+        PRIMARY KEY (id)
+    );""")
+
+    execute("""CREATE TABLE IF NOT EXISTS quiz_selections (
+        quiz_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        selection INTEGER,
+        FOREIGN KEY (quiz_id) REFERENCES quizzes(id),
+        PRIMARY KEY (quiz_id, user_id)
+    );""")
+
+
+    #table for zat113 check-ins
     execute("""CREATE TABLE IF NOT EXISTS student_ids (
         user_id INTEGER NOT NULL,
         student_id INTEGER NOT NULL,
         PRIMARY KEY (user_id)
     );""")
+
+
+
+
+#saves a quiz into the database
+def save_quiz(poll_id:int, results_id:int, correct:int):
+    execute("INSERT INTO quizzes VALUES (?, ?, ?)", (poll_id, results_id, correct))
+
+#saves a quiz selection into the database, selections can only be made once as this stores first time selections
+def save_quiz_result(quiz_id:int, user_id:int, selection:int):
+    execute("INSERT INTO quiz_selections VALUES (?, ?, ?)", (quiz_id, user_id, selection))
+
+def get_quiz_answer(quiz_id:int):
+    #Gets the correct answer for a quiz
+    return execute("SELECT correct FROM quizzes WHERE id = ?", (quiz_id,))[0][0]
+
+def get_quiz_results(quiz_id:int):
+    """Gets the winners discord ids from a quiz
+    returns winners as a list of ints representing the discord ids of the winners"""
+
+    #get the correct answer
+    correct = get_quiz_answer(quiz_id)
+
+    #get the users who have selected the correct answer
+    correct_users_query = execute("SELECT user_id FROM quiz_selections WHERE quiz_id = ? AND selection = ?", (quiz_id, correct))
+
+    correct_users = []
+    for row in correct_users_query:
+        correct_users.append(row[0])
+
+    #get the id of the message that contains the results
+    results_id = execute("SELECT results_id FROM quizzes WHERE id = ?", (quiz_id,))[0][0]
+
+    return results_id, correct_users
+    
+
+
 
 
 #saves a poll into the database
@@ -53,7 +110,6 @@ def save_poll_result(poll_id:int, user_id:int, selection:int):
     else:
         #if the user has already voted, update their selection
         execute("UPDATE poll_results SET selection = ? WHERE poll_id = ? AND user_id = ?", (selection, poll_id, user_id))
-
 
 #gets the poll results for a poll
 #returns result_id, counts. Where result_id is the id of the message that contains the results, and counts is a list of the number of votes for each option

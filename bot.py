@@ -8,8 +8,10 @@ from socket import timeout
 import discord # pycord
 import secrets
 import poll as pollModule
+import quiz as quizModule
 import db_handler as db
 import zat113_check_in as checkIn
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -81,15 +83,14 @@ async def poll(ctx,
 
 #quiz command
 @bot.slash_command(description = "Creates a multiple choice quiz")
-async def poll(ctx, 
+async def quiz(ctx, 
             question: discord.Option(str, "The question being asked", required = True, default = 'Is this true?'),
             options: discord.Option(str, "Selectable options to the question. Separated by a comma (,)", required = False, default = 'Yes,No'),
             correct: discord.Option(int, "The correct index (starting at 0)", required = True, default = 0),
             emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
             descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
         ):
-    #await quizModule.createPoll(bot, ctx, question, correct, options, emojis, descriptions)
-    pass
+    await quizModule.createQuiz(bot, ctx, question, correct, options, emojis, descriptions)
     
 
 

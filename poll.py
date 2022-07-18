@@ -75,7 +75,7 @@ class View(discord.ui.View):
 
 async def createPoll(bot, ctx, question, options, emojis, descriptions):
     """Creates a poll"""
-    
+
     await ctx.respond(question, view=View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(","), bot=bot))
     
     results_text = ""
@@ -95,7 +95,7 @@ async def createPoll(bot, ctx, question, options, emojis, descriptions):
     results_id = messages[0].id #the message of the results, directly after the poll
 
     db.save_poll(poll_id, results_id)
-    await log(f"Created poll {poll_id}, results {results_id}")
+    print(f"Created poll {poll_id}, results {results_id}")
 
         
         
