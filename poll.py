@@ -47,7 +47,8 @@ class View(discord.ui.View):
         custom_id="select-1"
     )
     
-    async def select_callback(self, select, interaction): # the function called when the user is done selecting options
+    async def select_callback(self, select, interaction: discord.Interaction): # the function called when the user is done selecting options
+        await interaction.response.send_message("Thank you for your selection!", ephemeral=True)
         db.save_poll_result(interaction.message.id, interaction.user.id, select.values[0])
 
         results_id, results = db.get_poll_results(int(interaction.message.id))
@@ -70,6 +71,31 @@ class View(discord.ui.View):
         
 
         await results_msg.edit(content="\n".join(lines))
+
+
+async def createPoll(bot, ctx, question, options, emojis, descriptions):
+    """Creates a poll"""
+    
+    await ctx.respond(question, view=View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(","), bot=bot))
+    
+    results_text = ""
+    for i in range(len(options.split(","))):
+        results_text += "0 - "
+        if i < len(emojis.split(",")): #emoji if there is one
+            results_text += emojis.split(",")[i] + ""
+
+        results_text += options.split(",")[i] + "\n"
+        
+
+    await bot.get_channel(ctx.channel_id).send(results_text)
+
+    messages = await ctx.channel.history(limit=2).flatten() #get those two sent messages
+
+    poll_id = messages[1].id #the message id of the poll sent by the bot
+    results_id = messages[0].id #the message of the results, directly after the poll
+
+    db.save_poll(poll_id, results_id)
+    await log(f"Created poll {poll_id}, results {results_id}")
 
         
         

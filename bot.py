@@ -77,26 +77,19 @@ async def poll(ctx,
             emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
             descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
         ):
-    await ctx.respond(question, view=pollModule.View(options=options.split(","), emojis=emojis.split(","), descriptions=descriptions.split(","), bot=bot))
-    
-    results_text = ""
-    for i in range(len(options.split(","))):
-        results_text += "0 - "
-        if i < len(emojis.split(",")): #emoji if there is one
-            results_text += emojis.split(",")[i] + ""
+    await pollModule.createPoll(bot, ctx, question, options, emojis, descriptions)
 
-        results_text += options.split(",")[i] + "\n"
-        
-
-    await bot.get_channel(ctx.channel_id).send(results_text)
-
-    messages = await ctx.channel.history(limit=2).flatten() #get those two sent messages
-
-    poll_id = messages[1].id #the message id of the poll sent by the bot
-    results_id = messages[0].id #the message of the results, directly after the poll
-
-    db.save_poll(poll_id, results_id)
-    await log(f"Created poll {poll_id}, results {results_id}")
+#quiz command
+@bot.slash_command(description = "Creates a multiple choice quiz")
+async def poll(ctx, 
+            question: discord.Option(str, "The question being asked", required = True, default = 'Is this true?'),
+            options: discord.Option(str, "Selectable options to the question. Separated by a comma (,)", required = False, default = 'Yes,No'),
+            correct: discord.Option(int, "The correct index (starting at 0)", required = True, default = 0),
+            emojis: discord.Option(str, "An emoji for each option. Separated by a comma (,)", required = False, default = ''),
+            descriptions: discord.Option(str, "A description for each option. Separated by a comma (,)", required = False, default = ''),
+        ):
+    #await quizModule.createPoll(bot, ctx, question, correct, options, emojis, descriptions)
+    pass
     
 
 
