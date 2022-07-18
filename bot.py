@@ -24,6 +24,7 @@ db.setup()
 async def on_ready():
     await log(f"We have logged in as {bot.user}")
     bot.add_view(pollModule.View(bot=bot)) #remember that poll views are persistent
+    bot.add_view(quizModule.View(bot=bot)) #remember that poll views are persistent
 
 
 
