@@ -69,9 +69,9 @@ def save_quiz(poll_id:int, results_id:int, correct:int):
 
 #saves a quiz selection into the database, selections can only be made once as this stores first time selections
 def save_quiz_result(quiz_id:int, user_id:int, selection:int):
-    
+
     #Guard if the user has already selected
-    if execute("SELECT * FROM quiz_selections WHERE quiz_id = ? AND user_id = ?", (quiz_id, user_id)) == []:
+    if execute("SELECT * FROM quiz_selections WHERE quiz_id = ? AND user_id = ?", (quiz_id, user_id)) != []:
         return
 
     execute("INSERT INTO quiz_selections VALUES (?, ?, ?)", (quiz_id, user_id, selection))
