@@ -26,8 +26,6 @@ async def on_ready():
     bot.add_view(pollModule.View(bot=bot)) #remember that poll views are persistent
     bot.add_view(quizModule.View(bot=bot)) #remember that poll views are persistent
 
-
-
 class MyModal(discord.ui.Modal):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

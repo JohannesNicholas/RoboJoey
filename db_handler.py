@@ -133,7 +133,12 @@ def get_poll_results(poll_id:int):
 
 #sets the student id for a user
 def set_student_id(user_id:int, student_id:int):
-    execute("INSERT INTO student_ids VALUES (?, ?)", (user_id, student_id))
+    #if the student already exists, update the id
+    if execute("SELECT * FROM student_ids WHERE user_id = ?", (user_id,)) != []:
+        execute("UPDATE student_ids SET student_id = ? WHERE user_id = ?", (student_id, user_id))
+    #if the student does not exist, insert the id
+    else:
+        execute("INSERT INTO student_ids VALUES (?, ?)", (user_id, student_id))
 
 #gets the student id for a user, returns -1 if not found
 def get_student_id(user_id:int):
