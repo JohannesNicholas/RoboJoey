@@ -37,13 +37,14 @@ class View(discord.ui.View):
     def __init__(self, check_in_msg, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.check_in_msg = check_in_msg
+        self.user_id = check_in_msg.author.id
 
         supportButton = discord.ui.Button(label='What is my student ID?', style=discord.ButtonStyle.url, url='https://askus.utas.edu.au/app/answers/detail/a_id/1060/~/what-is-my-utas-student-id-number%3F')
         self.add_item(supportButton)
 
     @discord.ui.button(label="Enter student ID", style=discord.ButtonStyle.primary) # Create a button
     async def button_callback(self, button, interaction):
-        await interaction.response.send_modal(MyModal(title="Enter student ID", check_in_msg=self.check_in_msg))
+        await interaction.response.send_modal(MyModal(title="Enter student ID", check_in_msg=self.check_in_msg, user_id=self.user_id))
 
 
 
@@ -51,9 +52,10 @@ class View(discord.ui.View):
 class MyModal(discord.ui.Modal):
     check_in_msg = None
 
-    def __init__(self, check_in_msg, *args, **kwargs) -> None:
+    def __init__(self, check_in_msg, user_id, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.check_in_msg = check_in_msg
+        self.user_id = user_id #the user id of the user who checked in
     
         self.add_item(discord.ui.InputText(label="Student id", placeholder="123456", min_length=6, max_length=6))
 
@@ -71,9 +73,9 @@ class MyModal(discord.ui.Modal):
         await interaction.response.send_message(f"Thank you <@{interaction.user.id}> for your student ID", ephemeral=True)
         
         #if the user who checked in entered their student id
-        if interaction.user.id == self.check_in_msg.author.id:
-            await self.check_in_msg.add_reaction('🎫')
+        if interaction.user.id == self.user_id:
             await interaction.message.delete()
+            await self.check_in_msg.add_reaction('🎫')
 
 
 #returns a csv file of all the check ins
