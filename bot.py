@@ -108,8 +108,29 @@ async def check_ins(ctx : discord.ApplicationContext):
     file = await checkIn.get_check_ins(ctx.channel_id, bot=bot)
     print(file.fp)
     await ctx.respond("check ins:", file=file, ephemeral=True)
-        
 
+
+#Manually set a students ID
+@bot.slash_command(description = "Manually set a students ID in the database. (Staff only)")
+async def set_student_id(ctx : discord.ApplicationContext, 
+    discord_id: discord.Option(str, "The students Discord ID", required = True, default = ""),
+    student_id: discord.Option(str, "The students ID", required = True, default = ""),
+    ):
+    if ctx.author.id not in secrets.zat113_staff:
+        await ctx.respond("You are not a staff member.", ephemeral=True)
+        return
+
+    if not discord_id.isdigit():
+        await ctx.respond("discord id must be an integer, right click the user and select copy ID.", ephemeral=True)
+        return
+
+    if not student_id.isdigit():
+        await ctx.respond("student id must be an integer", ephemeral=True)
+        return
+
+    db.set_student_id(int(discord_id), int(student_id))
+    await ctx.respond("Saved!.", ephemeral=True)
+    
 
 
 @bot.slash_command()
