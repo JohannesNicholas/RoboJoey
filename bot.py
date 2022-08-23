@@ -13,6 +13,7 @@ import zat113_check_in as checkIn
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 bot = discord.Bot(intents=intents)
 db.setup()
@@ -131,7 +132,9 @@ async def colorize(ctx : discord.ApplicationContext):
 
     counter = 0
     #for all the members that dont have a color role
-    for member in members:
+    async for member in ctx.guild.fetch_members(limit=150):
+        print(member.name)
+
         if not any(role.name.startswith("Colors.") for role in member.roles):
             #assign a radom color role
             await member.add_roles(discord.utils.get(ctx.guild.roles, name=random.choice(colour_roles).name))
