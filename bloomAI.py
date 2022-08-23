@@ -1,5 +1,5 @@
 import requests
-from secrets import bloom_token
+from secrets import bloom_token, ai_chat_channels
 
 API_URL = "https://api-inference.huggingface.co/models/bigscience/bloom"
 headers = {"Authorization": f"Bearer {bloom_token}"}
@@ -58,6 +58,18 @@ Robo-Joey: I feel like an ice cream :>.
         return singleLine
 
 
+
+    def handle_message(self, message):
+        """Handle a message to see if it is a question for the AI"""
+
+        if message.channel.id not in ai_chat_channels: #if the channel is not in the list of channels to listen to
+            return None
+
+        #ignore messages from bots
+        if message.author.bot:
+            return None
+        
+        return self.ask_ai(message.content, message.author.name) #ask the AI the question
 
 
 if __name__ == "__main__":

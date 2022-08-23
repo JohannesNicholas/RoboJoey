@@ -9,6 +9,7 @@ import poll as pollModule
 import quiz as quizModule
 import db_handler as db
 import zat113_check_in as checkIn
+import bloomAI
 
 
 intents = discord.Intents.default()
@@ -17,6 +18,8 @@ intents.members = True
 
 bot = discord.Bot(intents=intents)
 db.setup()
+
+ai_conv = bloomAI.Conversation() #AI conversation
 
 
 
@@ -56,6 +59,11 @@ class View(discord.ui.View):
 @bot.event
 async def on_message(message):
     await checkIn.message(message)
+
+    x = ai_conv.handle_message(message)
+    if x != None:
+        await message.channel.send(x)
+    
 
 
 
