@@ -2,6 +2,7 @@
 #Check .git for creation and updates information
 #Author: Johannes Nicholas, https://github.com/JohannesNicholas
 
+import random
 import discord # pycord
 import secrets
 import poll as pollModule
@@ -101,6 +102,45 @@ async def quiz(ctx,
     
 
 
+#Colors for programming club
+@bot.slash_command(description = "Change your colour!",  guild_ids = [secrets.debug_guild, secrets.programming_club_guild], guild_only = True)
+async def change_color(ctx : discord.ApplicationContext, color : discord.Option(str, "The color you want to change to eg: Colors.green()", required = True, default = ' ')):
+    colour_roles = [role for role in ctx.guild.roles if role.name.startswith("Colors.")] # all the color roles
+
+    #if the user has chosen an available color
+    if color in [role.name for role in colour_roles]:
+
+        #remove old colors
+        for role in colour_roles:
+            await ctx.author.remove_roles(role)
+
+        await ctx.author.add_roles(discord.utils.get(ctx.guild.roles, name=color))
+        await ctx.respond("Colour changed!", ephemeral=True)
+
+    else:
+        await ctx.respond("`" + color + "` is not available. Here are the available colors: \n" \
+            + "\n".join(["`" + role.name + "`" for role in colour_roles]), ephemeral=True)
+
+#Colorize the programming club
+@bot.slash_command(description = "Assign a random color of the available 'Color.' roles uncolored members. (Admin Only)",  guild_ids = [secrets.debug_guild, secrets.programming_club_guild], guild_only = True, administrator = True)
+async def colorize(ctx : discord.ApplicationContext):
+    await ctx.respond("colorizing...")
+
+    colour_roles = [role for role in ctx.guild.roles if role.name.startswith("Colors.")] # all the color roles
+    members = ctx.guild.members #all members in the guild
+
+    counter = 0
+    #for all the members that dont have a color role
+    for member in members:
+        if not any(role.name.startswith("Colors.") for role in member.roles):
+            #assign a radom color role
+            await member.add_roles(discord.utils.get(ctx.guild.roles, name=random.choice(colour_roles).name))
+            await ctx.respond("Added color to " + member.name, ephemeral=True)
+            counter += 1
+
+    await ctx.channel.send(f"Done! {counter} members colorized! 🥳")
+
+
 #Check_ins command
 @bot.slash_command(description = "Get a CSV of all the check ins. (Staff only)",  guild_ids = [secrets.debug_guild, secrets.zat113_guild], guild_only = True)
 async def check_ins(ctx : discord.ApplicationContext):
@@ -116,7 +156,6 @@ async def check_ins(ctx : discord.ApplicationContext):
     file = await checkIn.get_check_ins(ctx.channel_id, bot=bot)
     print(file.fp)
     await ctx.respond("check ins:", file=file, ephemeral=True)
-
 
 #Manually set a students ID
 @bot.slash_command(description = "Manually set a students ID in the database. (Staff only)",  guild_ids = [secrets.debug_guild, secrets.zat113_guild], guild_only = True)
@@ -139,6 +178,9 @@ async def set_student_id(ctx : discord.ApplicationContext,
     db.set_student_id(int(discord_id), int(student_id))
     await ctx.respond("Saved!.", ephemeral=True)
     
+
+
+
 
 
 @bot.slash_command()
