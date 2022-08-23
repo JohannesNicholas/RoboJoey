@@ -60,10 +60,6 @@ async def on_message(message):
 
 
 
-#slash commands
-@bot.slash_command()
-async def hello(ctx):
-    await ctx.respond("Hello!")
 
 #ping command
 @bot.slash_command(description = "The delay from the discord server to the bot")
