@@ -23,8 +23,15 @@ db.setup()
 @bot.event
 async def on_ready():
     await log(f"We have logged in as {bot.user}")
-    bot.add_view(pollModule.View(bot=bot)) #remember that poll views are persistent
-    bot.add_view(quizModule.View(bot=bot)) #remember that poll views are persistent
+
+    quizzes = db.get_all_quiz_ids()
+    for quiz in quizzes:
+        bot.add_view(quizModule.View(bot=bot), message_id=quiz) #remember that poll views are persistent
+
+    polls = db.get_all_poll_ids()
+    for poll in polls:
+        bot.add_view(pollModule.View(bot=bot), message_id=poll) #remember that poll views are persistent
+
 
 class MyModal(discord.ui.Modal):
     def __init__(self, *args, **kwargs) -> None:

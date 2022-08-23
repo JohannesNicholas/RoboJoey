@@ -99,7 +99,13 @@ def get_quiz_results(quiz_id:int):
 
     return results_id, correct_users
     
-
+def get_all_quiz_ids():
+    """Gets all the quiz ids in the database"""
+    ids = []
+    rows = execute("SELECT id FROM quizzes")
+    for row in rows:
+        ids.append(row[0])
+    return ids
 
 
 
@@ -134,6 +140,17 @@ def get_poll_results(poll_id:int):
     results_id = execute("SELECT results_id FROM polls WHERE id = ?", (poll_id,))[0][0]
 
     return results_id, counts
+
+def get_all_poll_ids():
+    """Gets all the poll ids in the database"""
+    ids = []
+    rows = execute("SELECT id FROM polls")
+    for row in rows:
+        ids.append(row[0])
+    return ids
+
+
+
 
 
 #sets the student id for a user
