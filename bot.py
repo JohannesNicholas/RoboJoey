@@ -2,9 +2,6 @@
 #Check .git for creation and updates information
 #Author: Johannes Nicholas, https://github.com/JohannesNicholas
 
-
-from email import message
-from socket import timeout
 import discord # pycord
 import secrets
 import poll as pollModule
@@ -19,6 +16,8 @@ intents.message_content = True
 bot = discord.Bot(intents=intents)
 db.setup()
 
+
+
 #when the bot is connected
 @bot.event
 async def on_ready():
@@ -31,6 +30,8 @@ async def on_ready():
     polls = db.get_all_poll_ids()
     for poll in polls:
         bot.add_view(pollModule.View(bot=bot), message_id=poll) #remember that poll views are persistent
+
+
 
 
 class MyModal(discord.ui.Modal):
@@ -101,7 +102,7 @@ async def quiz(ctx,
 
 
 #Check_ins command
-@bot.slash_command(description = "Get a CSV of all the check ins. (Staff only)")
+@bot.slash_command(description = "Get a CSV of all the check ins. (Staff only)",  guild_ids = [secrets.debug_guild, secrets.zat113_guild], guild_only = True)
 async def check_ins(ctx : discord.ApplicationContext):
 
     await ctx.defer(ephemeral=True)
@@ -118,7 +119,7 @@ async def check_ins(ctx : discord.ApplicationContext):
 
 
 #Manually set a students ID
-@bot.slash_command(description = "Manually set a students ID in the database. (Staff only)")
+@bot.slash_command(description = "Manually set a students ID in the database. (Staff only)",  guild_ids = [secrets.debug_guild, secrets.zat113_guild], guild_only = True)
 async def set_student_id(ctx : discord.ApplicationContext, 
     discord_id: discord.Option(str, "The students Discord ID", required = True, default = ""),
     student_id: discord.Option(str, "The students ID", required = True, default = ""),

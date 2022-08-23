@@ -61,8 +61,6 @@ def setup():
     );""")
 
 
-
-
 #saves a quiz into the database
 def save_quiz(poll_id:int, results_id:int, correct:int):
     execute("INSERT INTO quizzes VALUES (?, ?, ?)", (poll_id, results_id, correct))
