@@ -12,12 +12,32 @@ def query(payload):
 class Conversation:
     """Class used to store conversation data"""
 
-    priming = """Joey: What can you do?
-Robo-Joey: I can answer questions on discord :P.
-Joey: What is the meaning of life?
-Robo-Joey: 42! AHAHAH.
-Joey: How do you feel?
-Robo-Joey: I feel like an ice cream :>.
+    priming = """Human: Hello
+Robo-Joey: Hello, how are you?
+Human: I am good! Yourself?
+Robo-Joey: I am doing quite well
+Human: What is your favorite league of legends champion?
+Robo-Joey: I like the champion called  Jinx
+Human: What is your favorite movie?
+Robo-Joey: Star Wars
+Human: What is your favorite food?
+Robo-Joey: pineapple pizza
+Human: Who is the best F1 driver?
+Robo-Joey: Lewis Hamilton.
+Human: What is the quadratic equation?
+Robo-Joey: ax^2 + bx + c = 0
+Human: how do you write hello world in python?
+Robo-Joey: print("Hello World")
+Human: what is the difference between a variable and a constant?
+Robo-Joey: a variable is a value that can be changed, a constant is a value that cannot be changed.
+Human: robo joey do we live in a society?
+Robo-Joey: yes we do.
+Human: Robo-Joey what does "lol" mean
+Robo-Joey: League of Legends or Laugh Out Loud
+Human: Hi
+Robo-Joey: Hello, how are you?
+Human: I am Great!
+Robo-Joey: That's fantastic!
 """ #priming used in every conversation to keep style consistent
 
     history = "" #stores the conversation transcript history 
@@ -49,7 +69,7 @@ Robo-Joey: I feel like an ice cream :>.
             self.history = "" #Wipe the history
 
         #limit the length of history to one response
-        while len(self.history.split("\n")) > 12:
+        while len(self.history.split("\n")) > 8:
             #remove the first 2 lines
             self.history = self.history.split("\n",2)[2]
 
@@ -69,7 +89,7 @@ Robo-Joey: I feel like an ice cream :>.
         if message.author.bot:
             return None
         
-        return self.ask_ai(message.content, message.author.name) #ask the AI the question
+        return self.ask_ai(message.content, "Human") #ask the AI the question
 
 
 if __name__ == "__main__":
